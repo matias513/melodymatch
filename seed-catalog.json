@@ -1,0 +1,758 @@
+[
+  {
+    "title": "Blinding Lights",
+    "artist": "The Weeknd",
+    "country": "Canada",
+    "region": "Global",
+    "fingerprint": [
+      0.14,
+      0.58,
+      0.62,
+      0.44
+    ]
+  },
+  {
+    "title": "Shape of You",
+    "artist": "Ed Sheeran",
+    "country": "United Kingdom",
+    "region": "Global",
+    "fingerprint": [
+      0.18,
+      0.63,
+      0.66,
+      0.52
+    ]
+  },
+  {
+    "title": "Despacito",
+    "artist": "Luis Fonsi",
+    "country": "Puerto Rico",
+    "region": "LATAM",
+    "fingerprint": [
+      0.17,
+      0.61,
+      0.69,
+      0.55
+    ]
+  },
+  {
+    "title": "Believer",
+    "artist": "Imagine Dragons",
+    "country": "United States",
+    "region": "Global",
+    "fingerprint": [
+      0.13,
+      0.72,
+      0.55,
+      0.46
+    ]
+  },
+  {
+    "title": "Viva La Vida",
+    "artist": "Coldplay",
+    "country": "United Kingdom",
+    "region": "Global",
+    "fingerprint": [
+      0.16,
+      0.54,
+      0.57,
+      0.41
+    ]
+  },
+  {
+    "title": "Someone Like You",
+    "artist": "Adele",
+    "country": "United Kingdom",
+    "region": "Global",
+    "fingerprint": [
+      0.12,
+      0.46,
+      0.41,
+      0.33
+    ]
+  },
+  {
+    "title": "Yellow",
+    "artist": "Coldplay",
+    "country": "United Kingdom",
+    "region": "Global",
+    "fingerprint": [
+      0.13,
+      0.49,
+      0.45,
+      0.35
+    ]
+  },
+  {
+    "title": "Perfect",
+    "artist": "Ed Sheeran",
+    "country": "United Kingdom",
+    "region": "Global",
+    "fingerprint": [
+      0.15,
+      0.51,
+      0.47,
+      0.36
+    ]
+  },
+  {
+    "title": "Bad Guy",
+    "artist": "Billie Eilish",
+    "country": "United States",
+    "region": "Global",
+    "fingerprint": [
+      0.21,
+      0.59,
+      0.74,
+      0.58
+    ]
+  },
+  {
+    "title": "Levitating",
+    "artist": "Dua Lipa",
+    "country": "United Kingdom",
+    "region": "Global",
+    "fingerprint": [
+      0.19,
+      0.64,
+      0.7,
+      0.56
+    ]
+  },
+  {
+    "title": "Stay",
+    "artist": "The Kid LAROI & Justin Bieber",
+    "country": "Australia",
+    "region": "Global",
+    "fingerprint": [
+      0.2,
+      0.67,
+      0.71,
+      0.54
+    ]
+  },
+  {
+    "title": "As It Was",
+    "artist": "Harry Styles",
+    "country": "United Kingdom",
+    "region": "Global",
+    "fingerprint": [
+      0.17,
+      0.57,
+      0.61,
+      0.47
+    ]
+  },
+  {
+    "title": "Dance Monkey",
+    "artist": "Tones and I",
+    "country": "Australia",
+    "region": "Global",
+    "fingerprint": [
+      0.18,
+      0.66,
+      0.63,
+      0.51
+    ]
+  },
+  {
+    "title": "Closer",
+    "artist": "The Chainsmokers",
+    "country": "United States",
+    "region": "Global",
+    "fingerprint": [
+      0.16,
+      0.55,
+      0.58,
+      0.42
+    ]
+  },
+  {
+    "title": "Rolling in the Deep",
+    "artist": "Adele",
+    "country": "United Kingdom",
+    "region": "Global",
+    "fingerprint": [
+      0.14,
+      0.69,
+      0.59,
+      0.48
+    ]
+  },
+  {
+    "title": "Counting Stars",
+    "artist": "OneRepublic",
+    "country": "United States",
+    "region": "Global",
+    "fingerprint": [
+      0.17,
+      0.62,
+      0.67,
+      0.53
+    ]
+  },
+  {
+    "title": "Uptown Funk",
+    "artist": "Mark Ronson ft. Bruno Mars",
+    "country": "United Kingdom",
+    "region": "Global",
+    "fingerprint": [
+      0.21,
+      0.74,
+      0.77,
+      0.61
+    ]
+  },
+  {
+    "title": "Smells Like Teen Spirit",
+    "artist": "Nirvana",
+    "country": "United States",
+    "region": "Global",
+    "fingerprint": [
+      0.11,
+      0.73,
+      0.52,
+      0.37
+    ]
+  },
+  {
+    "title": "Billie Jean",
+    "artist": "Michael Jackson",
+    "country": "United States",
+    "region": "Global",
+    "fingerprint": [
+      0.19,
+      0.61,
+      0.65,
+      0.5
+    ]
+  },
+  {
+    "title": "Thriller",
+    "artist": "Michael Jackson",
+    "country": "United States",
+    "region": "Global",
+    "fingerprint": [
+      0.18,
+      0.57,
+      0.6,
+      0.46
+    ]
+  },
+  {
+    "title": "Bohemian Rhapsody",
+    "artist": "Queen",
+    "country": "United Kingdom",
+    "region": "Global",
+    "fingerprint": [
+      0.1,
+      0.52,
+      0.39,
+      0.29
+    ]
+  },
+  {
+    "title": "Wonderwall",
+    "artist": "Oasis",
+    "country": "United Kingdom",
+    "region": "Global",
+    "fingerprint": [
+      0.13,
+      0.48,
+      0.44,
+      0.34
+    ]
+  },
+  {
+    "title": "Take on Me",
+    "artist": "a-ha",
+    "country": "Norway",
+    "region": "Global",
+    "fingerprint": [
+      0.17,
+      0.68,
+      0.72,
+      0.55
+    ]
+  },
+  {
+    "title": "Sweet Child O' Mine",
+    "artist": "Guns N' Roses",
+    "country": "United States",
+    "region": "Global",
+    "fingerprint": [
+      0.12,
+      0.64,
+      0.5,
+      0.38
+    ]
+  },
+  {
+    "title": "Hotel California",
+    "artist": "Eagles",
+    "country": "United States",
+    "region": "Global",
+    "fingerprint": [
+      0.11,
+      0.47,
+      0.42,
+      0.31
+    ]
+  },
+  {
+    "title": "Africa",
+    "artist": "Toto",
+    "country": "United States",
+    "region": "Global",
+    "fingerprint": [
+      0.16,
+      0.56,
+      0.59,
+      0.43
+    ]
+  },
+  {
+    "title": "Hips Don't Lie",
+    "artist": "Shakira",
+    "country": "Colombia",
+    "region": "LATAM",
+    "fingerprint": [
+      0.22,
+      0.71,
+      0.78,
+      0.64
+    ]
+  },
+  {
+    "title": "La Bicicleta",
+    "artist": "Carlos Vives & Shakira",
+    "country": "Colombia",
+    "region": "LATAM",
+    "fingerprint": [
+      0.23,
+      0.68,
+      0.79,
+      0.63
+    ]
+  },
+  {
+    "title": "Tusa",
+    "artist": "Karol G & Nicki Minaj",
+    "country": "Colombia",
+    "region": "LATAM",
+    "fingerprint": [
+      0.2,
+      0.65,
+      0.73,
+      0.58
+    ]
+  },
+  {
+    "title": "Provenza",
+    "artist": "Karol G",
+    "country": "Colombia",
+    "region": "LATAM",
+    "fingerprint": [
+      0.19,
+      0.6,
+      0.67,
+      0.54
+    ]
+  },
+  {
+    "title": "Mi Gente",
+    "artist": "J Balvin",
+    "country": "Colombia",
+    "region": "LATAM",
+    "fingerprint": [
+      0.24,
+      0.77,
+      0.83,
+      0.69
+    ]
+  },
+  {
+    "title": "Ay Vamos",
+    "artist": "J Balvin",
+    "country": "Colombia",
+    "region": "LATAM",
+    "fingerprint": [
+      0.23,
+      0.74,
+      0.8,
+      0.65
+    ]
+  },
+  {
+    "title": "Gasolina",
+    "artist": "Daddy Yankee",
+    "country": "Puerto Rico",
+    "region": "LATAM",
+    "fingerprint": [
+      0.24,
+      0.81,
+      0.85,
+      0.72
+    ]
+  },
+  {
+    "title": "Dákiti",
+    "artist": "Bad Bunny & Jhay Cortez",
+    "country": "Puerto Rico",
+    "region": "LATAM",
+    "fingerprint": [
+      0.18,
+      0.56,
+      0.68,
+      0.57
+    ]
+  },
+  {
+    "title": "Tití Me Preguntó",
+    "artist": "Bad Bunny",
+    "country": "Puerto Rico",
+    "region": "LATAM",
+    "fingerprint": [
+      0.22,
+      0.75,
+      0.79,
+      0.66
+    ]
+  },
+  {
+    "title": "Callaíta",
+    "artist": "Bad Bunny & Tainy",
+    "country": "Puerto Rico",
+    "region": "LATAM",
+    "fingerprint": [
+      0.2,
+      0.64,
+      0.71,
+      0.58
+    ]
+  },
+  {
+    "title": "Me Rehúso",
+    "artist": "Danny Ocean",
+    "country": "Venezuela",
+    "region": "LATAM",
+    "fingerprint": [
+      0.19,
+      0.58,
+      0.7,
+      0.56
+    ]
+  },
+  {
+    "title": "Bailando",
+    "artist": "Enrique Iglesias",
+    "country": "Spain",
+    "region": "LATAM",
+    "fingerprint": [
+      0.21,
+      0.69,
+      0.76,
+      0.62
+    ]
+  },
+  {
+    "title": "La Camisa Negra",
+    "artist": "Juanes",
+    "country": "Colombia",
+    "region": "LATAM",
+    "fingerprint": [
+      0.2,
+      0.67,
+      0.72,
+      0.59
+    ]
+  },
+  {
+    "title": "Corazón Partío",
+    "artist": "Alejandro Sanz",
+    "country": "Spain",
+    "region": "LATAM",
+    "fingerprint": [
+      0.17,
+      0.55,
+      0.64,
+      0.51
+    ]
+  },
+  {
+    "title": "Color Esperanza",
+    "artist": "Diego Torres",
+    "country": "Argentina",
+    "region": "LATAM",
+    "fingerprint": [
+      0.15,
+      0.48,
+      0.52,
+      0.4
+    ]
+  },
+  {
+    "title": "De Música Ligera",
+    "artist": "Soda Stereo",
+    "country": "Argentina",
+    "region": "LATAM",
+    "fingerprint": [
+      0.13,
+      0.66,
+      0.51,
+      0.39
+    ]
+  },
+  {
+    "title": "Persiana Americana",
+    "artist": "Soda Stereo",
+    "country": "Argentina",
+    "region": "LATAM",
+    "fingerprint": [
+      0.14,
+      0.63,
+      0.53,
+      0.4
+    ]
+  },
+  {
+    "title": "En la Ciudad de la Furia",
+    "artist": "Soda Stereo",
+    "country": "Argentina",
+    "region": "LATAM",
+    "fingerprint": [
+      0.11,
+      0.5,
+      0.43,
+      0.32
+    ]
+  },
+  {
+    "title": "Flaca",
+    "artist": "Andrés Calamaro",
+    "country": "Argentina",
+    "region": "LATAM",
+    "fingerprint": [
+      0.14,
+      0.47,
+      0.46,
+      0.34
+    ]
+  },
+  {
+    "title": "Crimen",
+    "artist": "Gustavo Cerati",
+    "country": "Argentina",
+    "region": "LATAM",
+    "fingerprint": [
+      0.12,
+      0.45,
+      0.41,
+      0.31
+    ]
+  },
+  {
+    "title": "Lamento Boliviano",
+    "artist": "Enanitos Verdes",
+    "country": "Argentina",
+    "region": "LATAM",
+    "fingerprint": [
+      0.16,
+      0.57,
+      0.58,
+      0.44
+    ]
+  },
+  {
+    "title": "Matador",
+    "artist": "Los Fabulosos Cadillacs",
+    "country": "Argentina",
+    "region": "LATAM",
+    "fingerprint": [
+      0.23,
+      0.78,
+      0.81,
+      0.67
+    ]
+  },
+  {
+    "title": "La Cumbia de los Trapos",
+    "artist": "Yerba Brava",
+    "country": "Argentina",
+    "region": "LATAM",
+    "fingerprint": [
+      0.25,
+      0.83,
+      0.86,
+      0.73
+    ]
+  },
+  {
+    "title": "Un Beso y una Flor",
+    "artist": "Nino Bravo",
+    "country": "Spain",
+    "region": "LATAM",
+    "fingerprint": [
+      0.11,
+      0.43,
+      0.39,
+      0.28
+    ]
+  },
+  {
+    "title": "Rayando el Sol",
+    "artist": "Maná",
+    "country": "Mexico",
+    "region": "LATAM",
+    "fingerprint": [
+      0.13,
+      0.49,
+      0.44,
+      0.33
+    ]
+  },
+  {
+    "title": "Oye Mi Amor",
+    "artist": "Maná",
+    "country": "Mexico",
+    "region": "LATAM",
+    "fingerprint": [
+      0.19,
+      0.64,
+      0.68,
+      0.54
+    ]
+  },
+  {
+    "title": "La Incondicional",
+    "artist": "Luis Miguel",
+    "country": "Mexico",
+    "region": "LATAM",
+    "fingerprint": [
+      0.12,
+      0.46,
+      0.4,
+      0.3
+    ]
+  },
+  {
+    "title": "Eres",
+    "artist": "Café Tacvba",
+    "country": "Mexico",
+    "region": "LATAM",
+    "fingerprint": [
+      0.13,
+      0.44,
+      0.42,
+      0.3
+    ]
+  },
+  {
+    "title": "Rata de Dos Patas",
+    "artist": "Paquita la del Barrio",
+    "country": "Mexico",
+    "region": "LATAM",
+    "fingerprint": [
+      0.17,
+      0.59,
+      0.6,
+      0.48
+    ]
+  },
+  {
+    "title": "La Vida Es Un Carnaval",
+    "artist": "Celia Cruz",
+    "country": "Cuba",
+    "region": "LATAM",
+    "fingerprint": [
+      0.24,
+      0.79,
+      0.82,
+      0.68
+    ]
+  },
+  {
+    "title": "Vivir Mi Vida",
+    "artist": "Marc Anthony",
+    "country": "Puerto Rico",
+    "region": "LATAM",
+    "fingerprint": [
+      0.25,
+      0.82,
+      0.84,
+      0.71
+    ]
+  },
+  {
+    "title": "Felices los 4",
+    "artist": "Maluma",
+    "country": "Colombia",
+    "region": "LATAM",
+    "fingerprint": [
+      0.19,
+      0.61,
+      0.69,
+      0.56
+    ]
+  },
+  {
+    "title": "Moscow Mule",
+    "artist": "Bad Bunny",
+    "country": "Puerto Rico",
+    "region": "LATAM",
+    "fingerprint": [
+      0.18,
+      0.53,
+      0.66,
+      0.55
+    ]
+  },
+  {
+    "title": "Ella Baila Sola",
+    "artist": "Eslabon Armado & Peso Pluma",
+    "country": "Mexico",
+    "region": "LATAM",
+    "fingerprint": [
+      0.17,
+      0.57,
+      0.65,
+      0.53
+    ]
+  },
+  {
+    "title": "BZRP Music Sessions #52",
+    "artist": "Bizarrap & Quevedo",
+    "country": "Argentina",
+    "region": "LATAM",
+    "fingerprint": [
+      0.22,
+      0.73,
+      0.78,
+      0.65
+    ]
+  },
+  {
+    "title": "BZRP Music Sessions #53",
+    "artist": "Bizarrap & Shakira",
+    "country": "Argentina",
+    "region": "LATAM",
+    "fingerprint": [
+      0.21,
+      0.7,
+      0.75,
+      0.62
+    ]
+  },
+  {
+    "title": "Te Mentiría",
+    "artist": "Luck Ra",
+    "country": "Argentina",
+    "region": "LATAM",
+    "fingerprint": [
+      0.23,
+      0.76,
+      0.82,
+      0.68
+    ]
+  }
+]
