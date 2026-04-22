@@ -20,10 +20,10 @@ export function matchFromFeatures(features: AudioFeatures): SearchMatch[] {
             : "Posible coincidencia parcial dentro del catálogo curado.";
 
       return {
-        title: song.title,
-        artist: song.artist,
-        country: song.country,
-        region: song.region,
+      title: String(song.title),
+artist: String(song.artist),
+country: String(song.country),
+region: String(song.region),
         confidence,
         summary
       } satisfies SearchMatch;
