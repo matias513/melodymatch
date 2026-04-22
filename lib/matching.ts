@@ -11,7 +11,7 @@ export function matchFromFeatures(features: AudioFeatures): SearchMatch[] {
 
   return seedCatalog
     .map((song) => {
-      const confidence = Math.round(similarity(input, song.fingerprint));
+    const confidence = Math.round(similarity(input, song.fingerprint as number[]));
       const summary =
         confidence >= 85
           ? "Coincidencia fuerte con el patrón rítmico y la energía general."
