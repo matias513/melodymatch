@@ -6,7 +6,7 @@ export type SongSeed = {
   fingerprint: [number, number, number, number];
 };
 
-export const seedCatalog: SongSeed[] = [
+export const seedCatalog = [
   ["Blinding Lights","The Weeknd","Canada","Global",[0.14,0.58,0.62,0.44]],
   ["Shape of You","Ed Sheeran","United Kingdom","Global",[0.18,0.63,0.66,0.52]],
   ["Despacito","Luis Fonsi","Puerto Rico","LATAM",[0.17,0.61,0.69,0.55]],
@@ -71,3 +71,4 @@ export const seedCatalog: SongSeed[] = [
   ["BZRP Music Sessions #53","Bizarrap & Shakira","Argentina","LATAM",[0.21,0.7,0.75,0.62]],
   ["Te Mentiría","Luck Ra","Argentina","LATAM",[0.23,0.76,0.82,0.68]]
 ].map(([title, artist, country, region, fingerprint]) => ({ title, artist, country, region, fingerprint }));
+
