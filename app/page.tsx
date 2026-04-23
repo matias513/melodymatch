@@ -66,7 +66,9 @@ export default function HomePage() {
           <div className="glass-card-strong p-6 sm:p-8">
             <div className="mb-6 flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-slate-400">Experiencia principal</p>
+                <p className="text-sm font-medium text-slate-400">
+                  Experiencia principal
+                </p>
                 <h2 className="mt-2 text-2xl font-bold text-white sm:text-3xl">
                   Probá el motor de búsqueda musical
                 </h2>
@@ -82,13 +84,16 @@ export default function HomePage() {
 
           <aside className="space-y-6">
             <div className="glass-card p-6">
-              <p className="text-sm font-medium text-slate-400">Qué hace distinto a MelodyMatch</p>
+              <p className="text-sm font-medium text-slate-400">
+                Qué hace distinto a MelodyMatch
+              </p>
               <h3 className="mt-2 text-2xl font-semibold text-white">
                 Una búsqueda pensada para memoria musical
               </h3>
               <p className="mt-4 text-sm leading-7 text-slate-400">
-                La idea no es solo mostrar coincidencias. La idea es que la experiencia
-                se sienta simple, confiable y visualmente clara desde el primer uso.
+                La idea no es solo mostrar coincidencias. La idea es que la
+                experiencia se sienta simple, confiable y visualmente clara
+                desde el primer uso.
               </p>
 
               <div className="mt-6 space-y-3">
@@ -105,13 +110,17 @@ export default function HomePage() {
             </div>
 
             <div className="glass-card p-6">
-              <p className="text-sm font-medium text-slate-400">Visión del producto</p>
+              <p className="text-sm font-medium text-slate-400">
+                Visión del producto
+              </p>
               <h3 className="mt-2 text-xl font-semibold text-white">
-                El objetivo: algo tan natural como Shazam, pero guiado por la voz y el ritmo.
+                El objetivo: algo tan natural como Shazam, pero guiado por la
+                voz y el ritmo.
               </h3>
               <p className="mt-4 text-sm leading-7 text-slate-400">
-                Esta versión es una base. Lo importante ahora es que la experiencia se vea
-                sólida, clara y lista para evolucionar a un producto real.
+                Esta versión es una base. Lo importante ahora es que la
+                experiencia se vea sólida, clara y lista para evolucionar a un
+                producto real.
               </p>
             </div>
           </aside>
@@ -125,17 +134,24 @@ export default function HomePage() {
             Una home más clara, ordenada y lista para crecer
           </h2>
           <p className="mt-4 max-w-3xl text-base leading-7 text-slate-400">
-            En vez de apilar bloques sueltos, organizamos la página para que el usuario
-            entienda rápido qué hace MelodyMatch, cómo probarla y por qué puede ser útil.
+            En vez de apilar bloques sueltos, organizamos la página para que el
+            usuario entienda rápido qué hace MelodyMatch, cómo probarla y por
+            qué puede ser útil.
           </p>
         </div>
 
         <div className="grid gap-5 md:grid-cols-3">
           {featureCards.map((item) => (
             <article key={item.title} className="glass-card p-6">
-              <p className="text-sm font-medium text-violet-300">{item.eyebrow}</p>
-              <h3 className="mt-3 text-xl font-semibold text-white">{item.title}</h3>
-              <p className="mt-4 text-sm leading-7 text-slate-400">{item.text}</p>
+              <p className="text-sm font-medium text-violet-300">
+                {item.eyebrow}
+              </p>
+              <h3 className="mt-3 text-xl font-semibold text-white">
+                {item.title}
+              </h3>
+              <p className="mt-4 text-sm leading-7 text-slate-400">
+                {item.text}
+              </p>
             </article>
           ))}
         </div>
