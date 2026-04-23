@@ -5,18 +5,34 @@ import { Recorder } from "@/components/recorder";
 export default function HomePage() {
   return (
     <main className="min-h-screen bg-zinc-950 px-4 py-8 md:px-8">
-      <div className="mx-auto flex max-w-6xl items-center justify-between py-4">
-        <div>
-          <p className="text-xl font-semibold">MelodyMatch</p>
-          <p className="text-sm text-zinc-500">Buscador de canciones por tarareo</p>
-        </div>
-        <Link
-          href="/api/history"
-          className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm text-zinc-300 transition hover:bg-white/10"
-        >
-          Ver historial JSON
-        </Link>
+     <header className="page-shell pt-6 pb-4">
+  <div className="glass-card flex flex-col gap-4 px-5 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
+    <div className="flex items-center gap-4">
+      <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-white/10 bg-gradient-to-br from-violet-600/30 to-cyan-500/20 shadow-[0_10px_30px_rgba(124,58,237,0.25)]">
+        <span className="text-lg font-bold text-white">M</span>
       </div>
+
+      <div>
+        <p className="text-xl font-semibold tracking-tight text-white">
+          MelodyMatch
+        </p>
+        <p className="text-sm text-slate-400">
+          Descubrí canciones por tarareo, ritmo y memoria musical.
+        </p>
+      </div>
+    </div>
+
+    <div className="flex items-center gap-3">
+      <div className="hidden rounded-full border border-emerald-400/20 bg-emerald-400/10 px-3 py-1 text-xs font-medium text-emerald-300 sm:inline-flex">
+        Beta privada · catálogo inicial
+      </div>
+
+      <Link href="/api/history" className="secondary-button">
+        Ver historial JSON
+      </Link>
+    </div>
+  </div>
+</header>
 
       <div className="mx-auto max-w-6xl space-y-8">
         <Hero />
