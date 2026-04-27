@@ -182,7 +182,7 @@ export default function HomePage() {
           ))}
         </div>
       </section>
-    </main>
+
           <section className="page-shell py-10">
         <div className="grid gap-6 lg:grid-cols-[1.05fr_0.95fr]">
           <div className="glass-card-strong p-6 sm:p-8">
