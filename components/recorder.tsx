@@ -124,7 +124,6 @@ analyze();
   setAnalyzing(false);
 }
     }
-  }
 
   async function stopRecording() {
   setAnalyzing(true);
