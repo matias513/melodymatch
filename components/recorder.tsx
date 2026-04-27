@@ -131,7 +131,7 @@ export function Recorder() {
   }
 
 return (
-<section className="grid gap-6">
+<section id="recorder" className="grid gap-6">
     <div className="glass-card-strong relative overflow-hidden p-6">
       <div className="absolute -right-16 top-0 h-40 w-40 rounded-full bg-violet-600/10 blur-3xl" />
       <div className="absolute bottom-0 left-0 h-32 w-32 rounded-full bg-cyan-500/10 blur-3xl" />
