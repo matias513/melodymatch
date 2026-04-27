@@ -131,7 +131,7 @@ export function Recorder() {
   }
 
 return (
-<section id="recorder" className="grid gap-6">
+  <section id="recorder" className="grid gap-6">
     <div className="glass-card-strong relative overflow-hidden p-6">
       <div className="absolute -right-16 top-0 h-40 w-40 rounded-full bg-violet-600/10 blur-3xl" />
       <div className="absolute bottom-0 left-0 h-32 w-32 rounded-full bg-cyan-500/10 blur-3xl" />
@@ -151,7 +151,7 @@ return (
           </div>
 
           <div className="hidden rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-medium text-slate-300 sm:inline-flex">
-            Demo experimental
+            Prueba interactiva
           </div>
         </div>
 
@@ -174,7 +174,7 @@ return (
             <p className="text-xs font-medium uppercase tracking-[0.18em] text-slate-500">
               Salida
             </p>
-            <p className="mt-2 text-sm font-medium text-white">Top coincidencias</p>
+            <p className="mt-2 text-sm font-medium text-white">Mejores coincidencias</p>
           </div>
         </div>
 
@@ -182,16 +182,13 @@ return (
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <p className="text-sm font-medium text-white">
-                {recording ? "Grabando ahora" : "Listo para grabar"}
+                {recording ? "Grabando ahora" : "Grabación disponible"}
               </p>
               <p className="mt-1 text-sm text-slate-400">{status}</p>
             </div>
 
             {!recording ? (
-              <button
-                onClick={startRecording}
-                className="primary-button"
-              >
+              <button onClick={startRecording} className="primary-button">
                 Empezar grabación
               </button>
             ) : (
@@ -264,7 +261,7 @@ return (
         <div>
           <p className="text-sm font-medium text-slate-400">Resultados</p>
           <h2 className="mt-2 text-2xl font-bold text-white">
-            Top 5 coincidencias
+            Mejores coincidencias
           </h2>
           <p className="mt-3 text-sm leading-7 text-slate-400">
             Las coincidencias aparecen ordenadas para que el usuario entienda
@@ -273,25 +270,25 @@ return (
         </div>
 
         <div className="hidden rounded-full border border-violet-400/20 bg-violet-400/10 px-3 py-1 text-xs font-medium text-violet-300 sm:inline-flex">
-          Ranking visual
+          Resultados ordenados
         </div>
       </div>
 
       <div className="mt-6 space-y-3">
         {results.length === 0 ? (
-        <div className="rounded-[24px] border border-dashed border-white/10 bg-white/[0.04] px-5 py-8 text-center">
-  <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl border border-white/10 bg-white/5 text-slate-300">
-    ♪
-  </div>
+          <div className="rounded-[24px] border border-dashed border-white/10 bg-white/[0.04] px-5 py-8 text-center">
+            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl border border-white/10 bg-white/5 text-slate-300">
+              ♪
+            </div>
 
-  <p className="mt-4 text-sm font-medium text-white">
-    Todavía no hay coincidencias cargadas
-  </p>
+            <p className="mt-4 text-sm font-medium text-white">
+              Todavía no hay resultados para mostrar
+            </p>
 
-  <p className="mt-2 text-sm leading-7 text-slate-400">
-    Grabá una melodía para ver resultados del catálogo curado.
-  </p>
-</div>
+            <p className="mt-2 text-sm leading-7 text-slate-400">
+              Grabá una melodía para ver resultados del catálogo curado.
+            </p>
+          </div>
         ) : (
           results.map((item, index) => (
             <ResultCard
