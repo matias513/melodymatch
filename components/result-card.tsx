@@ -1,26 +1,72 @@
 import type { SearchMatch } from "@/lib/types";
 
-export function ResultCard({ item, index }: { item: SearchMatch; index: number }) {
+export function ResultCard({
+  item,
+  index,
+}: {
+  item: SearchMatch;
+  index: number;
+}) {
+  const isTop = index === 0;
+  const confidenceTone =
+    item.confidence >= 85
+      ? "text-emerald-300 border-emerald-400/20 bg-emerald-400/10"
+      : item.confidence >= 72
+        ? "text-cyan-300 border-cyan-400/20 bg-cyan-400/10"
+        : "text-amber-300 border-amber-400/20 bg-amber-400/10";
+
   return (
-    <div className="rounded-2xl border border-white/10 bg-zinc-900/70 p-4">
+    <article className="group rounded-[28px] border border-white/10 bg-white/[0.04] p-5 transition-all duration-300 hover:border-white/15 hover:bg-white/[0.06]">
       <div className="flex items-start justify-between gap-4">
-        <div>
-          <div className="flex items-center gap-2">
-            <span className="rounded-full bg-brand-500/20 px-2 py-1 text-xs font-medium text-brand-100">
+        <div className="min-w-0">
+          <div className="mb-3 flex flex-wrap items-center gap-2">
+            <span className="inline-flex rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-semibold text-slate-300">
               #{index + 1}
             </span>
-            <h3 className="text-lg font-semibold">{item.title}</h3>
+
+            {isTop && (
+              <span className="inline-flex rounded-full border border-violet-400/20 bg-violet-400/10 px-3 py-1 text-xs font-semibold text-violet-300">
+                Mejor match
+              </span>
+            )}
           </div>
-          <p className="mt-1 text-sm text-zinc-400">
+
+          <h3 className="truncate text-lg font-semibold text-white sm:text-xl">
+            {item.title}
+          </h3>
+
+          <p className="mt-1 text-sm text-slate-400">
             {item.artist} · {item.region} · {item.country}
           </p>
-          <p className="mt-2 text-sm text-zinc-300">{item.summary}</p>
         </div>
+
         <div className="text-right">
-          <p className="text-2xl font-bold">{item.confidence}%</p>
-          <p className="text-xs text-zinc-500">coincidencia</p>
+          <div
+            className={`inline-flex rounded-2xl border px-3 py-2 text-sm font-semibold ${confidenceTone}`}
+          >
+            {item.confidence}%
+          </div>
+          <p className="mt-2 text-xs uppercase tracking-[0.16em] text-slate-500">
+            coincidencia
+          </p>
         </div>
       </div>
-    </div>
+
+      <div className="mt-5">
+        <div className="h-2 w-full overflow-hidden rounded-full bg-white/8">
+          <div
+            className="h-full rounded-full bg-gradient-to-r from-violet-500 via-cyan-400 to-emerald-400"
+            style={{ width: `${item.confidence}%` }}
+          />
+        </div>
+      </div>
+
+      <div className="mt-5 rounded-2xl border border-white/8 bg-black/20 p-4">
+        <p className="text-xs font-medium uppercase tracking-[0.16em] text-slate-500">
+          Lectura rápida
+        </p>
+        <p className="mt-2 text-sm leading-7 text-slate-300">{item.summary}</p>
+      </div>
+    </article>
   );
 }
