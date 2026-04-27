@@ -295,6 +295,4 @@ return (
     </div>
   </section>
 );
-    </section>
-  );
 }
