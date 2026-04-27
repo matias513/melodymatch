@@ -24,8 +24,8 @@ export default function Hero() {
             </p>
 
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <button className="primary-button">Probar MelodyMatch</button>
-              <button className="secondary-button">Ver cómo funciona</button>
+              <a href="#recorder" className="primary-button">Probar MelodyMatch</a>
+              <a href="#como-funciona" className="secondary-button">Ver cómo funciona</a>
             </div>
 
             <div className="mt-10 grid gap-4 sm:grid-cols-3">
