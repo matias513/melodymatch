@@ -279,9 +279,19 @@ return (
 
       <div className="mt-6 space-y-3">
         {results.length === 0 ? (
-          <div className="rounded-2xl border border-dashed border-white/10 bg-white/5 p-5 text-sm text-slate-400">
-            Grabá una melodía para ver resultados del catálogo curado.
-          </div>
+        <div className="rounded-[24px] border border-dashed border-white/10 bg-white/[0.04] px-5 py-8 text-center">
+  <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl border border-white/10 bg-white/5 text-slate-300">
+    ♪
+  </div>
+
+  <p className="mt-4 text-sm font-medium text-white">
+    Todavía no hay coincidencias cargadas
+  </p>
+
+  <p className="mt-2 text-sm leading-7 text-slate-400">
+    Grabá una melodía para ver resultados del catálogo curado.
+  </p>
+</div>
         ) : (
           results.map((item, index) => (
             <ResultCard
