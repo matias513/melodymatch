@@ -153,7 +153,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="page-shell py-8">
+      <section id="como-funciona" className="page-shell py-8">
         <div className="mb-6">
           <div className="badge-soft">Cómo está pensada la app</div>
           <h2 className="mt-4 text-3xl font-bold text-white sm:text-4xl">
