@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Hero } from "@/components/hero";
+import Hero from "@/components/hero";
 import { Recorder } from "@/components/recorder";
 
 const featureCards = [
