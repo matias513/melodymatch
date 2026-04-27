@@ -30,6 +30,7 @@ export function Recorder() {
   const [status, setStatus] = useState("Tarareá la melodía o marcá el ritmo con la voz.");
   const [results, setResults] = useState<SearchMatch[]>([]);
   const [features, setFeatures] = useState<AudioFeatures | null>(null);
+  const [analyzing, setAnalyzing] = useState(false);
 
   const analyze = () => {
     const analyser = analyserRef.current;
