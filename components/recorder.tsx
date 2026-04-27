@@ -108,28 +108,34 @@ export function Recorder() {
         });
 
         const data = await response.json();
-        setResults(data.results ?? []);
-        setStatus("Listo. Estas son las coincidencias más probables del catálogo inicial.");
-      };
+setResults(data.results ?? []);
+setStatus("Listo. Estas son las coincidencias más probables del catálogo inicial.");
+setAnalyzing(false);
+};
 
-      mediaRecorderRef.current = recorder;
-      startedAtRef.current = performance.now();
-      recorder.start();
-      setRecording(true);
-      setStatus("Grabando... tarareá durante 4 a 8 segundos.");
-      analyze();
-    } catch {
-      setStatus("No pude acceder al micrófono. Revisá los permisos del navegador.");
+mediaRecorderRef.current = recorder;
+startedAtRef.current = performance.now();
+recorder.start();
+setRecording(true);
+setStatus("Grabando... tarareá durante 4 a 8 segundos.");
+analyze();
+} catch {
+  setStatus("No pude acceder al micrófono. Revisá los permisos del navegador.");
+  setAnalyzing(false);
+}
     }
   }
 
   async function stopRecording() {
-    mediaRecorderRef.current?.stop();
-    mediaRecorderRef.current = null;
-    streamRef.current?.getTracks().forEach((track) => track.stop());
-    await audioContextRef.current?.close();
-    setRecording(false);
-  }
+  setAnalyzing(true);
+  setStatus("Analizando audio...");
+
+  mediaRecorderRef.current?.stop();
+  mediaRecorderRef.current = null;
+  streamRef.current?.getTracks().forEach((track) => track.stop());
+  await audioContextRef.current?.close();
+  setRecording(false);
+}
 
 return (
   <section id="recorder" className="grid gap-6">
