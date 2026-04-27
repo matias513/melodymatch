@@ -24,8 +24,12 @@ export default function Hero() {
             </p>
 
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <a href="#recorder" className="primary-button">Probar MelodyMatch</a>
-              <a href="#como-funciona" className="secondary-button">Ver cómo funciona</a>
+              <a href="#recorder" className="primary-button">
+                Probar la demo
+              </a>
+              <a href="#como-funciona" className="secondary-button">
+                Entender cómo funciona
+              </a>
             </div>
 
             <div className="mt-10 grid gap-4 sm:grid-cols-3">
@@ -42,9 +46,9 @@ export default function Hero() {
               </div>
 
               <div className="glass-card px-5 py-5">
-                <p className="text-sm text-slate-400">Experiencia</p>
+                <p className="text-sm text-slate-400">Propuesta</p>
                 <p className="mt-2 text-3xl font-bold text-white">
-                  Más premium
+                  Lista para crecer
                 </p>
               </div>
             </div>
@@ -55,15 +59,15 @@ export default function Hero() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-slate-400">
-                    Vista rápida
+                    Experiencia guiada
                   </p>
                   <p className="mt-1 text-lg font-semibold text-white">
-                    Cómo se siente el producto
+                    Cómo funciona MelodyMatch
                   </p>
                 </div>
 
                 <div className="rounded-full border border-emerald-400/20 bg-emerald-400/10 px-3 py-1 text-xs font-semibold text-emerald-300">
-                  Beta
+                  Versión inicial
                 </div>
               </div>
 
@@ -91,7 +95,7 @@ export default function Hero() {
                     Objetivo
                   </p>
                   <p className="mt-2 text-sm font-medium text-white">
-                    Una experiencia simple, clara y memorable
+                    Una búsqueda simple, clara y fácil de entender
                   </p>
                 </div>
               </div>
