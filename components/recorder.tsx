@@ -149,39 +149,66 @@ export function Recorder() {
   };
 
   function buildFeaturesFromFrames(durationSec: number): AudioFeatures | null {
-    const frames = frameMetricsRef.current;
-    if (!frames.length) return null;
+  const frames = frameMetricsRef.current;
+  if (!frames.length) return null;
 
-    const voicedFrames = frames.filter((frame) => frame.voiced);
-    const energyValues = voicedFrames.map((frame) => frame.energy);
-    const zcrValues = voicedFrames.map((frame) => frame.zcr);
-    const peakValues = voicedFrames.map((frame) => frame.peak);
+  const voicedFrames = frames.filter((frame) => frame.voiced);
+  if (voicedFrames.length < 10) {
+    return null;
+  }
 
-    if (voicedFrames.length < 8) {
-      return null;
-    }
+  const energyValues = voicedFrames.map((frame) => frame.energy);
+  const zcrValues = voicedFrames.map((frame) => frame.zcr);
+  const peakValues = voicedFrames.map((frame) => frame.peak);
 
-    const voicedRatio = voicedFrames.length / frames.length;
-    const avgEnergy = average(energyValues);
-    const medEnergy = median(energyValues);
-    const avgPeak = average(peakValues);
-    const avgZcr = average(zcrValues);
+  const voicedRatio = voicedFrames.length / frames.length;
+  const avgEnergy = average(energyValues);
+  const medEnergy = median(energyValues);
+  const avgPeak = average(peakValues);
+  const medPeak = median(peakValues);
+  const avgZcr = average(zcrValues);
+  const medZcr = median(zcrValues);
 
-    const density = clamp(voicedRatio * 0.6 + avgPeak * 0.55 + medEnergy * 18);
-    const energy = clamp(avgEnergy * 36 + avgPeak * 0.5);
+  const beatTimes = beatTimesRef.current;
+  const beatIntervals: number[] = [];
 
-    let stableZcr = clamp(avgZcr * 8.5);
-    if (stableZcr < 0.08) stableZcr *= 0.8;
-    if (stableZcr > 0.85) stableZcr = 0.85;
+  for (let i = 1; i < beatTimes.length; i += 1) {
+    beatIntervals.push(beatTimes[i] - beatTimes[i - 1]);
+  }
 
-    const normalizedLength = clamp(durationSec / 8, 0, 1);
+  const medianBeatGap = median(beatIntervals);
+  const beatDensity =
+    durationSec > 0 ? clamp((beatTimes.length / durationSec) / 4, 0, 1) : 0;
 
-    return {
-      density,
-      energy,
-      zcr: stableZcr,
-      length: normalizedLength,
-    };
+  const rhythmStability =
+    medianBeatGap > 0
+      ? clamp(1 - Math.min(0.45, Math.abs(medianBeatGap - 520) / 900), 0, 1)
+      : 0.35;
+
+  const density = clamp(
+    voicedRatio * 0.42 +
+      avgPeak * 0.22 +
+      medPeak * 0.18 +
+      medEnergy * 10 +
+      beatDensity * 0.12 +
+      rhythmStability * 0.06
+  );
+
+  const energy = clamp(avgEnergy * 24 + medEnergy * 10 + avgPeak * 0.34);
+
+  let stableZcr = clamp(avgZcr * 6.5 + medZcr * 2.5, 0, 1);
+  if (stableZcr < 0.08) stableZcr *= 0.82;
+  if (stableZcr > 0.78) stableZcr = 0.78;
+
+  const normalizedLength = clamp(durationSec / 8, 0, 1);
+
+  return {
+    density,
+    energy,
+    zcr: stableZcr,
+    length: normalizedLength,
+  };
+}
   }
 
   async function startRecording() {
