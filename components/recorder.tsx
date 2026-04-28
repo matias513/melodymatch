@@ -99,17 +99,18 @@ export function Recorder() {
         };
 
         setFeatures(payload);
-        setStatus("Buscando coincidencias...");
+setStatus("Analizando audio y buscando coincidencias...");
 
-        const response = await fetch("/api/search", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload)
-        });
+const response = await fetch("/api/search", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify(payload)
+});
 
-        const data = await response.json();
+const data = await response.json();
 setResults(data.results ?? []);
 setStatus("Listo. Estas son las coincidencias más probables del catálogo inicial.");
+await new Promise((resolve) => setTimeout(resolve, 1200));
 setAnalyzing(false);
 };
 
@@ -122,6 +123,7 @@ analyze();
 } catch {
   setStatus("No pude acceder al micrófono. Revisá los permisos del navegador.");
   setAnalyzing(false);
+}
 }
     }
 
