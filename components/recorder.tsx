@@ -140,7 +140,6 @@ export function Recorder() {
             energy,
             zcr,
             length: clamp(durationSec / 8, 0, 1),
-            tempo: normalizedBpm,
           };
 
           setFeatures(payload);
