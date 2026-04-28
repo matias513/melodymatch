@@ -209,6 +209,11 @@ export function Recorder() {
     length: normalizedLength,
   };
 }
+    energy,
+    zcr: stableZcr,
+    length: normalizedLength,
+  };
+}
   }
 
   async function startRecording() {
