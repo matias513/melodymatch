@@ -1,16 +1,33 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ResultCard } from "@/components/result-card";
 import type { AudioFeatures, SearchMatch } from "@/lib/types";
+
+type FrameMetrics = {
+  energy: number;
+  zcr: number;
+  voiced: boolean;
+  peak: number;
+  timestamp: number;
+};
 
 function average(values: number[]) {
   if (!values.length) return 0;
   return values.reduce((sum, value) => sum + value, 0) / values.length;
 }
 
-function clamp(value: number, min: number, max: number) {
+function clamp(value: number, min = 0, max = 1) {
   return Math.min(max, Math.max(min, value));
+}
+
+function median(values: number[]) {
+  if (!values.length) return 0;
+  const sorted = [...values].sort((a, b) => a - b);
+  const middle = Math.floor(sorted.length / 2);
+  return sorted.length % 2 === 0
+    ? (sorted[middle - 1] + sorted[middle]) / 2
+    : sorted[middle];
 }
 
 export function Recorder() {
@@ -21,11 +38,11 @@ export function Recorder() {
   const analyserRef = useRef<AnalyserNode | null>(null);
   const rafRef = useRef<number | null>(null);
   const startedAtRef = useRef<number>(0);
+  const stopTimeoutRef = useRef<number | null>(null);
 
-  const energySamplesRef = useRef<number[]>([]);
-  const zcrSamplesRef = useRef<number[]>([]);
-  const beatSamplesRef = useRef<number[]>([]);
-  const lastBeatRef = useRef<number>(0);
+  const frameMetricsRef = useRef<FrameMetrics[]>([]);
+  const beatTimesRef = useRef<number[]>([]);
+  const lastBeatAtRef = useRef<number>(0);
 
   const [recording, setRecording] = useState(false);
   const [analyzing, setAnalyzing] = useState(false);
@@ -34,46 +51,138 @@ export function Recorder() {
   );
   const [results, setResults] = useState<SearchMatch[]>([]);
   const [features, setFeatures] = useState<AudioFeatures | null>(null);
+  const [bars, setBars] = useState<number[]>([20, 28, 18, 32, 24, 36, 20, 30, 22, 34, 18, 28]);
 
-  const analyze = () => {
+  function cleanupAudioGraph() {
+    if (rafRef.current) {
+      cancelAnimationFrame(rafRef.current);
+      rafRef.current = null;
+    }
+
+    if (stopTimeoutRef.current) {
+      window.clearTimeout(stopTimeoutRef.current);
+      stopTimeoutRef.current = null;
+    }
+
+    streamRef.current?.getTracks().forEach((track) => track.stop());
+    streamRef.current = null;
+
+    void audioContextRef.current?.close();
+    audioContextRef.current = null;
+
+    analyserRef.current = null;
+  }
+
+  useEffect(() => {
+    return () => {
+      cleanupAudioGraph();
+    };
+  }, []);
+
+  const analyzeFrame = () => {
     const analyser = analyserRef.current;
     if (!analyser) return;
 
-    const data = new Uint8Array(analyser.fftSize);
-    analyser.getByteTimeDomainData(data);
+    const timeData = new Uint8Array(analyser.fftSize);
+    analyser.getByteTimeDomainData(timeData);
 
     let energy = 0;
     let zeroCrossings = 0;
+    let peak = 0;
 
-    for (let i = 0; i < data.length; i += 1) {
-      const normalized = (data[i] - 128) / 128;
+    for (let i = 0; i < timeData.length; i += 1) {
+      const normalized = (timeData[i] - 128) / 128;
+      const abs = Math.abs(normalized);
+
       energy += normalized * normalized;
+      if (abs > peak) peak = abs;
 
       if (i > 0) {
-        const prev = data[i - 1] - 128;
-        const curr = data[i] - 128;
+        const prev = timeData[i - 1] - 128;
+        const curr = timeData[i] - 128;
         if ((prev >= 0 && curr < 0) || (prev < 0 && curr >= 0)) {
           zeroCrossings += 1;
         }
       }
     }
 
-    energy /= data.length;
-    const zcr = zeroCrossings / data.length;
+    energy /= timeData.length;
+    const zcr = zeroCrossings / timeData.length;
 
-    energySamplesRef.current.push(energy);
-    zcrSamplesRef.current.push(zcr);
+    const voiced = energy > 0.0025 && peak > 0.08;
 
     const now = performance.now();
-    const threshold = 0.02;
 
-    if (energy > threshold && now - lastBeatRef.current > 260) {
-      beatSamplesRef.current.push(now);
-      lastBeatRef.current = now;
+    frameMetricsRef.current.push({
+      energy,
+      zcr,
+      voiced,
+      peak,
+      timestamp: now,
+    });
+
+    const recent = frameMetricsRef.current.slice(-12);
+    const visualBars = recent.map((frame) => {
+      const value = frame.voiced
+        ? clamp(frame.energy * 850 + frame.peak * 42, 0.18, 1)
+        : clamp(frame.energy * 300 + frame.peak * 16, 0.12, 0.55);
+
+      return Math.round(18 + value * 46);
+    });
+
+    if (visualBars.length > 0) {
+      setBars([
+        ...Array(Math.max(0, 12 - visualBars.length)).fill(18),
+        ...visualBars,
+      ]);
     }
 
-    rafRef.current = requestAnimationFrame(analyze);
+    const beatThreshold = 0.0105;
+    const minBeatGap = 280;
+
+    if (voiced && energy > beatThreshold && now - lastBeatAtRef.current > minBeatGap) {
+      beatTimesRef.current.push(now);
+      lastBeatAtRef.current = now;
+    }
+
+    rafRef.current = requestAnimationFrame(analyzeFrame);
   };
+
+  function buildFeaturesFromFrames(durationSec: number): AudioFeatures | null {
+    const frames = frameMetricsRef.current;
+    if (!frames.length) return null;
+
+    const voicedFrames = frames.filter((frame) => frame.voiced);
+    const energyValues = voicedFrames.map((frame) => frame.energy);
+    const zcrValues = voicedFrames.map((frame) => frame.zcr);
+    const peakValues = voicedFrames.map((frame) => frame.peak);
+
+    if (voicedFrames.length < 8) {
+      return null;
+    }
+
+    const voicedRatio = voicedFrames.length / frames.length;
+    const avgEnergy = average(energyValues);
+    const medEnergy = median(energyValues);
+    const avgPeak = average(peakValues);
+    const avgZcr = average(zcrValues);
+
+    const density = clamp(voicedRatio * 0.6 + avgPeak * 0.55 + medEnergy * 18);
+    const energy = clamp(avgEnergy * 36 + avgPeak * 0.5);
+
+    let stableZcr = clamp(avgZcr * 8.5);
+    if (stableZcr < 0.08) stableZcr *= 0.8;
+    if (stableZcr > 0.85) stableZcr = 0.85;
+
+    const normalizedLength = clamp(durationSec / 8, 0, 1);
+
+    return {
+      density,
+      energy,
+      zcr: stableZcr,
+      length: normalizedLength,
+    };
+  }
 
   async function startRecording() {
     try {
@@ -82,13 +191,20 @@ export function Recorder() {
       setAnalyzing(false);
       setStatus("Preparando grabación...");
 
-      energySamplesRef.current = [];
-      zcrSamplesRef.current = [];
-      beatSamplesRef.current = [];
-      lastBeatRef.current = 0;
+      frameMetricsRef.current = [];
+      beatTimesRef.current = [];
+      lastBeatAtRef.current = 0;
       chunksRef.current = [];
+      setBars([20, 28, 18, 32, 24, 36, 20, 30, 22, 34, 18, 28]);
 
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const stream = await navigator.mediaDevices.getUserMedia({
+        audio: {
+          echoCancellation: true,
+          noiseSuppression: true,
+          autoGainControl: true,
+        },
+      });
+
       streamRef.current = stream;
 
       const audioContext = new AudioContext();
@@ -97,6 +213,8 @@ export function Recorder() {
       const source = audioContext.createMediaStreamSource(stream);
       const analyser = audioContext.createAnalyser();
       analyser.fftSize = 2048;
+      analyser.smoothingTimeConstant = 0.82;
+
       analyserRef.current = analyser;
       source.connect(analyser);
 
@@ -110,37 +228,24 @@ export function Recorder() {
 
       recorder.onstop = async () => {
         try {
-          const durationMs = Math.max(
-            1,
-            performance.now() - startedAtRef.current
-          );
+          const durationMs = Math.max(1, performance.now() - startedAtRef.current);
           const durationSec = durationMs / 1000;
 
-          const density = clamp(average(energySamplesRef.current) * 40, 0, 1);
-          const energy = clamp(average(energySamplesRef.current) * 55, 0, 1);
-          const zcr = clamp(average(zcrSamplesRef.current) * 12, 0, 1);
-
-          let bpm = 0;
-          const beats = beatSamplesRef.current;
-
-          if (beats.length >= 2) {
-            const intervals: number[] = [];
-            for (let i = 1; i < beats.length; i += 1) {
-              intervals.push(beats[i] - beats[i - 1]);
-            }
-
-            const avgInterval = average(intervals);
-            bpm = avgInterval > 0 ? 60000 / avgInterval : 0;
+          if (durationSec < 2.8) {
+            setStatus("La grabación fue muy corta. Probá tararear entre 4 y 8 segundos.");
+            setAnalyzing(false);
+            cleanupAudioGraph();
+            return;
           }
 
-          const normalizedBpm = clamp(bpm / 180, 0, 1);
+          const payload = buildFeaturesFromFrames(durationSec);
 
-          const payload: AudioFeatures = {
-            density,
-            energy,
-            zcr,
-            length: clamp(durationSec / 8, 0, 1),
-          };
+          if (!payload) {
+            setStatus("No detecté suficiente voz clara. Probá cantar o tararear un poco más fuerte.");
+            setAnalyzing(false);
+            cleanupAudioGraph();
+            return;
+          }
 
           setFeatures(payload);
           setStatus("Analizando audio y buscando coincidencias...");
@@ -148,21 +253,22 @@ export function Recorder() {
 
           const response = await fetch("/api/search", {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: {
+              "Content-Type": "application/json",
+            },
             body: JSON.stringify(payload),
           });
 
           const data = await response.json();
           setResults(data.results ?? []);
-          setStatus(
-            "Listo. Estas son las coincidencias más probables del catálogo inicial."
-          );
 
-          await new Promise((resolve) => setTimeout(resolve, 1200));
+          setStatus("Listo. Estas son las coincidencias más probables del catálogo inicial.");
           setAnalyzing(false);
+          cleanupAudioGraph();
         } catch {
           setStatus("No pudimos analizar el audio. Probá grabar de nuevo.");
           setAnalyzing(false);
+          cleanupAudioGraph();
         }
       };
 
@@ -172,7 +278,13 @@ export function Recorder() {
       recorder.start();
       setRecording(true);
       setStatus("Grabando... tarareá durante 4 a 8 segundos.");
-      analyze();
+      analyzeFrame();
+
+      stopTimeoutRef.current = window.setTimeout(() => {
+        if (mediaRecorderRef.current && mediaRecorderRef.current.state !== "inactive") {
+          void stopRecording();
+        }
+      }, 8000);
     } catch {
       setStatus("No pude acceder al micrófono. Revisá los permisos del navegador.");
       setAnalyzing(false);
@@ -180,24 +292,19 @@ export function Recorder() {
   }
 
   async function stopRecording() {
+    if (!recording) return;
+
     setAnalyzing(true);
     setStatus("Analizando audio...");
+    setRecording(false);
 
-    if (rafRef.current) {
-      cancelAnimationFrame(rafRef.current);
-      rafRef.current = null;
+    if (stopTimeoutRef.current) {
+      window.clearTimeout(stopTimeoutRef.current);
+      stopTimeoutRef.current = null;
     }
 
     mediaRecorderRef.current?.stop();
     mediaRecorderRef.current = null;
-
-    streamRef.current?.getTracks().forEach((track) => track.stop());
-    streamRef.current = null;
-
-    await audioContextRef.current?.close();
-    audioContextRef.current = null;
-
-    setRecording(false);
   }
 
   return (
@@ -240,7 +347,7 @@ export function Recorder() {
                 Motor
               </p>
               <p className="mt-2 text-sm font-medium text-white">
-                Análisis rápido
+                Análisis más estable
               </p>
             </div>
 
@@ -249,7 +356,7 @@ export function Recorder() {
                 Salida
               </p>
               <p className="mt-2 text-sm font-medium text-white">
-                Mejores coincidencias
+                Top 5 más coherente
               </p>
             </div>
           </div>
@@ -265,11 +372,7 @@ export function Recorder() {
                       : "Grabación disponible"}
                 </p>
 
-                <p className="mt-1 text-sm text-slate-400">
-                  {analyzing
-                    ? "Estamos procesando la grabación para encontrar coincidencias."
-                    : status}
-                </p>
+                <p className="mt-1 text-sm text-slate-400">{status}</p>
               </div>
 
               {recording ? (
@@ -292,7 +395,7 @@ export function Recorder() {
             </div>
 
             <div className="mt-6 flex items-end gap-2">
-              {[28, 44, 24, 52, 36, 58, 30, 50, 34, 46, 26, 40].map((h, i) => (
+              {bars.map((h, i) => (
                 <div
                   key={i}
                   className={`w-full rounded-full transition-all duration-300 ${
