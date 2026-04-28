@@ -11,6 +11,7 @@ type FingerprintVector = {
 type InternalMatch = SearchMatch & {
   rawScore: number;
   penalties: number;
+  closeness: number;
   strengths: string[];
 };
 
@@ -46,26 +47,28 @@ function diff(a: number, b: number) {
   return Math.abs(a - b);
 }
 
-function similarityFromDiff(difference: number, softness = 1) {
-  return clamp(1 - difference * softness);
+function componentSimilarity(difference: number, weight = 1) {
+  return clamp(1 - difference * weight);
 }
 
 function classifyStrengths(input: FingerprintVector, candidate: FingerprintVector) {
-  const strengths: string[] = [];
-
   const densityDiff = diff(input.density, candidate.density);
   const energyDiff = diff(input.energy, candidate.energy);
   const lengthDiff = diff(input.length, candidate.length);
   const zcrDiff = diff(input.zcr, candidate.zcr);
 
-  if (densityDiff <= 0.08) strengths.push("ritmo muy parecido");
-  else if (densityDiff <= 0.14) strengths.push("ritmo similar");
+  const strengths: string[] = [];
 
-  if (energyDiff <= 0.08) strengths.push("energía muy cercana");
-  else if (energyDiff <= 0.14) strengths.push("energía similar");
+  if (densityDiff <= 0.07) strengths.push("ritmo muy parecido");
+  else if (densityDiff <= 0.13) strengths.push("ritmo similar");
 
-  if (lengthDiff <= 0.10) strengths.push("duración compatible");
-  if (zcrDiff <= 0.12) strengths.push("textura vocal parecida");
+  if (energyDiff <= 0.07) strengths.push("energía muy cercana");
+  else if (energyDiff <= 0.13) strengths.push("energía similar");
+
+  if (lengthDiff <= 0.09) strengths.push("duración compatible");
+  else if (lengthDiff <= 0.15) strengths.push("duración cercana");
+
+  if (zcrDiff <= 0.10) strengths.push("textura vocal parecida");
 
   return strengths;
 }
@@ -78,24 +81,29 @@ function buildPenalty(input: FingerprintVector, candidate: FingerprintVector) {
 
   let penalty = 0;
 
-  if (densityDiff > 0.22) penalty += 0.05;
-  if (densityDiff > 0.32) penalty += 0.08;
-  if (densityDiff > 0.42) penalty += 0.12;
+  if (densityDiff > 0.18) penalty += 0.04;
+  if (densityDiff > 0.28) penalty += 0.08;
+  if (densityDiff > 0.38) penalty += 0.13;
 
-  if (energyDiff > 0.22) penalty += 0.05;
-  if (energyDiff > 0.32) penalty += 0.08;
-  if (energyDiff > 0.42) penalty += 0.12;
+  if (energyDiff > 0.18) penalty += 0.04;
+  if (energyDiff > 0.28) penalty += 0.08;
+  if (energyDiff > 0.38) penalty += 0.13;
 
-  if (lengthDiff > 0.20) penalty += 0.03;
-  if (lengthDiff > 0.35) penalty += 0.07;
-  if (lengthDiff > 0.50) penalty += 0.10;
+  if (lengthDiff > 0.18) penalty += 0.03;
+  if (lengthDiff > 0.30) penalty += 0.06;
+  if (lengthDiff > 0.45) penalty += 0.10;
 
-  if (zcrDiff > 0.28) penalty += 0.02;
-  if (zcrDiff > 0.42) penalty += 0.04;
+  if (zcrDiff > 0.24) penalty += 0.015;
+  if (zcrDiff > 0.36) penalty += 0.03;
+  if (zcrDiff > 0.50) penalty += 0.05;
 
-  // Penalización adicional si fallan juntas las 2 features más importantes
-  if (densityDiff > 0.30 && energyDiff > 0.30) {
-    penalty += 0.10;
+  // castigo extra si fallan juntas las dos dimensiones más importantes
+  if (densityDiff > 0.26 && energyDiff > 0.26) {
+    penalty += 0.08;
+  }
+
+  if (densityDiff > 0.34 && energyDiff > 0.34) {
+    penalty += 0.06;
   }
 
   return penalty;
@@ -109,30 +117,48 @@ function buildBonus(input: FingerprintVector, candidate: FingerprintVector) {
 
   let bonus = 0;
 
-  if (densityDiff < 0.06) bonus += 0.04;
-  if (energyDiff < 0.06) bonus += 0.04;
-  if (lengthDiff < 0.08) bonus += 0.02;
-  if (zcrDiff < 0.10) bonus += 0.01;
+  if (densityDiff < 0.05) bonus += 0.04;
+  if (energyDiff < 0.05) bonus += 0.04;
+  if (lengthDiff < 0.07) bonus += 0.025;
+  if (zcrDiff < 0.08) bonus += 0.015;
 
-  if (densityDiff < 0.10 && energyDiff < 0.10) {
-    bonus += 0.03;
+  if (densityDiff < 0.09 && energyDiff < 0.09) {
+    bonus += 0.035;
+  }
+
+  if (densityDiff < 0.12 && energyDiff < 0.12 && lengthDiff < 0.12) {
+    bonus += 0.02;
   }
 
   return bonus;
 }
 
-function computeRawScore(input: FingerprintVector, candidate: FingerprintVector) {
-  const densityScore = similarityFromDiff(diff(input.density, candidate.density), 1.15);
-  const energyScore = similarityFromDiff(diff(input.energy, candidate.energy), 1.1);
-  const lengthScore = similarityFromDiff(diff(input.length, candidate.length), 0.95);
-  const zcrScore = similarityFromDiff(diff(input.zcr, candidate.zcr), 0.85);
+function computeCloseness(input: FingerprintVector, candidate: FingerprintVector) {
+  const densityDiff = diff(input.density, candidate.density);
+  const energyDiff = diff(input.energy, candidate.energy);
+  const lengthDiff = diff(input.length, candidate.length);
+  const zcrDiff = diff(input.zcr, candidate.zcr);
 
-  // Más peso a density y energy
+  const total =
+    densityDiff * 0.36 +
+    energyDiff * 0.31 +
+    lengthDiff * 0.21 +
+    zcrDiff * 0.12;
+
+  return clamp(1 - total);
+}
+
+function computeRawScore(input: FingerprintVector, candidate: FingerprintVector) {
+  const densityScore = componentSimilarity(diff(input.density, candidate.density), 1.18);
+  const energyScore = componentSimilarity(diff(input.energy, candidate.energy), 1.12);
+  const lengthScore = componentSimilarity(diff(input.length, candidate.length), 0.96);
+  const zcrScore = componentSimilarity(diff(input.zcr, candidate.zcr), 0.82);
+
   let score =
-    densityScore * 0.36 +
+    densityScore * 0.37 +
     energyScore * 0.31 +
     lengthScore * 0.20 +
-    zcrScore * 0.13;
+    zcrScore * 0.12;
 
   const penalty = buildPenalty(input, candidate);
   const bonus = buildBonus(input, candidate);
@@ -145,23 +171,24 @@ function computeRawScore(input: FingerprintVector, candidate: FingerprintVector)
   };
 }
 
-function confidenceFromScore(score: number) {
-  // Curva más exigente. No regala 90+ fácilmente.
-  if (score >= 0.95) return 97;
-  if (score >= 0.92) return 94;
-  if (score >= 0.89) return 91;
-  if (score >= 0.86) return 88;
-  if (score >= 0.83) return 84;
-  if (score >= 0.80) return 81;
-  if (score >= 0.77) return 78;
-  if (score >= 0.74) return 75;
-  if (score >= 0.71) return 72;
-  if (score >= 0.68) return 69;
-  if (score >= 0.65) return 66;
-  if (score >= 0.62) return 63;
-  if (score >= 0.58) return 59;
+function confidenceFromScore(score: number, closeness: number) {
+  const blended = score * 0.7 + closeness * 0.3;
 
-  return Math.max(45, Math.round(score * 100));
+  if (blended >= 0.95) return 97;
+  if (blended >= 0.92) return 94;
+  if (blended >= 0.89) return 91;
+  if (blended >= 0.86) return 88;
+  if (blended >= 0.83) return 84;
+  if (blended >= 0.80) return 81;
+  if (blended >= 0.77) return 78;
+  if (blended >= 0.74) return 75;
+  if (blended >= 0.71) return 72;
+  if (blended >= 0.68) return 69;
+  if (blended >= 0.65) return 66;
+  if (blended >= 0.62) return 63;
+  if (blended >= 0.58) return 59;
+
+  return Math.max(44, Math.round(blended * 100));
 }
 
 function buildSummary(
@@ -170,42 +197,37 @@ function buildSummary(
   penalties: number
 ) {
   if (confidence >= 92) {
-    if (strengths.length >= 2) {
-      return `Coincidencia muy fuerte por ${strengths.slice(0, 2).join(" y ")}.`;
-    }
-    return "Coincidencia muy fuerte dentro del catálogo curado.";
+    return strengths.length >= 2
+      ? `Coincidencia muy fuerte por ${strengths.slice(0, 2).join(" y ")}.`
+      : "Coincidencia muy fuerte dentro del catálogo.";
   }
 
   if (confidence >= 84) {
-    if (strengths.length >= 2) {
-      return `Coincidencia sólida por ${strengths.slice(0, 2).join(" y ")}.`;
-    }
-    if (strengths.length === 1) {
-      return `Coincidencia sólida por ${strengths[0]}.`;
-    }
-    return "Coincidencia sólida dentro del catálogo curado.";
+    return strengths.length >= 2
+      ? `Coincidencia sólida por ${strengths.slice(0, 2).join(" y ")}.`
+      : strengths.length === 1
+        ? `Coincidencia sólida por ${strengths[0]}.`
+        : "Coincidencia sólida dentro del catálogo.";
   }
 
   if (confidence >= 74) {
-    if (strengths.length > 0) {
-      return `Buena similitud por ${strengths.slice(0, 2).join(" y ")}.`;
-    }
-    return "Buena similitud general. Probá una toma más estable para afinar.";
+    return strengths.length > 0
+      ? `Buena similitud por ${strengths.slice(0, 2).join(" y ")}.`
+      : "Buena similitud general. Una toma más clara puede mejorar el ranking.";
   }
 
   if (confidence >= 64) {
-    if (penalties >= 0.12) {
-      return "Coincidencia posible, pero con diferencias notables. Probá repetir el tarareo.";
-    }
-    return "Coincidencia parcial plausible dentro del catálogo actual.";
+    return penalties >= 0.12
+      ? "Coincidencia posible, pero con diferencias notables. Probá repetir el tarareo."
+      : "Coincidencia parcial plausible dentro del catálogo actual.";
   }
 
   return "Coincidencia baja. Conviene grabar una referencia más clara.";
 }
 
 function isPlausibleMatch(match: InternalMatch) {
-  if (match.rawScore < 0.50) return false;
-  if (match.confidence < 52) return false;
+  if (match.rawScore < 0.48) return false;
+  if (match.confidence < 50) return false;
   return true;
 }
 
@@ -213,26 +235,25 @@ function diversify(matches: InternalMatch[]) {
   const selected: InternalMatch[] = [];
   const usedTitles = new Set<string>();
   const usedArtists = new Map<string, number>();
-  const usedCountries = new Map<string, number>();
+  const usedRegions = new Map<string, number>();
 
   for (const match of matches) {
     const titleKey = match.title.trim().toLowerCase();
     const artistKey = match.artist.trim().toLowerCase();
-    const countryKey = match.country.trim().toLowerCase();
+    const regionKey = match.region.trim().toLowerCase();
 
     if (usedTitles.has(titleKey)) continue;
 
     const artistCount = usedArtists.get(artistKey) ?? 0;
-    const countryCount = usedCountries.get(countryKey) ?? 0;
+    const regionCount = usedRegions.get(regionKey) ?? 0;
 
-    // Evita que el top quede demasiado clonado
     if (artistCount >= 1 && selected.length < 4) continue;
-    if (countryCount >= 3 && selected.length < 4) continue;
+    if (regionCount >= 3 && selected.length < 4) continue;
 
     selected.push(match);
     usedTitles.add(titleKey);
     usedArtists.set(artistKey, artistCount + 1);
-    usedCountries.set(countryKey, countryCount + 1);
+    usedRegions.set(regionKey, regionCount + 1);
 
     if (selected.length === 5) break;
   }
@@ -259,7 +280,8 @@ export function matchFromFeatures(features: AudioFeatures): SearchMatch[] {
     .map((song) => {
       const candidate = normalizeFingerprint(song.fingerprint);
       const { score, penalties } = computeRawScore(input, candidate);
-      const confidence = confidenceFromScore(score);
+      const closeness = computeCloseness(input, candidate);
+      const confidence = confidenceFromScore(score, closeness);
       const strengths = classifyStrengths(input, candidate);
       const summary = buildSummary(confidence, strengths, penalties);
 
@@ -272,25 +294,27 @@ export function matchFromFeatures(features: AudioFeatures): SearchMatch[] {
         summary,
         rawScore: score,
         penalties,
+        closeness,
         strengths,
       };
     })
     .filter(isPlausibleMatch)
     .sort((a, b) => {
       if (b.rawScore !== a.rawScore) return b.rawScore - a.rawScore;
+      if (b.closeness !== a.closeness) return b.closeness - a.closeness;
       if (b.confidence !== a.confidence) return b.confidence - a.confidence;
       return a.penalties - b.penalties;
     });
 
   const topMatches = diversify(allMatches);
 
-  // Fallback si el catálogo actual no alcanza a dar 5 plausibles
   if (topMatches.length < 5) {
     const fallback = seedCatalog
       .map((song) => {
         const candidate = normalizeFingerprint(song.fingerprint);
         const { score, penalties } = computeRawScore(input, candidate);
-        const confidence = confidenceFromScore(score);
+        const closeness = computeCloseness(input, candidate);
+        const confidence = confidenceFromScore(score, closeness);
         const strengths = classifyStrengths(input, candidate);
         const summary = buildSummary(confidence, strengths, penalties);
 
@@ -303,21 +327,23 @@ export function matchFromFeatures(features: AudioFeatures): SearchMatch[] {
           summary,
           rawScore: score,
           penalties,
+          closeness,
           strengths,
         } satisfies InternalMatch;
       })
       .sort((a, b) => {
         if (b.rawScore !== a.rawScore) return b.rawScore - a.rawScore;
+        if (b.closeness !== a.closeness) return b.closeness - a.closeness;
         if (b.confidence !== a.confidence) return b.confidence - a.confidence;
         return a.penalties - b.penalties;
       });
 
     return diversify(fallback)
       .slice(0, 5)
-      .map(({ rawScore, penalties, strengths, ...match }) => match);
+      .map(({ rawScore, penalties, closeness, strengths, ...match }) => match);
   }
 
   return topMatches
     .slice(0, 5)
-    .map(({ rawScore, penalties, strengths, ...match }) => match);
+    .map(({ rawScore, penalties, closeness, strengths, ...match }) => match);
 }
