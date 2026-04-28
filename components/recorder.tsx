@@ -108,7 +108,6 @@ export function Recorder() {
 
     energy /= timeData.length;
     const zcr = zeroCrossings / timeData.length;
-
     const voiced = energy > 0.0025 && peak > 0.08;
 
     const now = performance.now();
@@ -149,66 +148,65 @@ export function Recorder() {
   };
 
   function buildFeaturesFromFrames(durationSec: number): AudioFeatures | null {
-  const frames = frameMetricsRef.current;
-  if (!frames.length) return null;
+    const frames = frameMetricsRef.current;
+    if (!frames.length) return null;
 
-  const voicedFrames = frames.filter((frame) => frame.voiced);
-  if (voicedFrames.length < 10) {
-    return null;
-  }
+    const voicedFrames = frames.filter((frame) => frame.voiced);
+    if (voicedFrames.length < 10) {
+      return null;
+    }
 
-  const energyValues = voicedFrames.map((frame) => frame.energy);
-  const zcrValues = voicedFrames.map((frame) => frame.zcr);
-  const peakValues = voicedFrames.map((frame) => frame.peak);
+    const energyValues = voicedFrames.map((frame) => frame.energy);
+    const zcrValues = voicedFrames.map((frame) => frame.zcr);
+    const peakValues = voicedFrames.map((frame) => frame.peak);
 
-  const voicedRatio = voicedFrames.length / frames.length;
-  const avgEnergy = average(energyValues);
-  const medEnergy = median(energyValues);
-  const avgPeak = average(peakValues);
-  const medPeak = median(peakValues);
-  const avgZcr = average(zcrValues);
-  const medZcr = median(zcrValues);
+    const voicedRatio = voicedFrames.length / frames.length;
+    const avgEnergy = average(energyValues);
+    const medEnergy = median(energyValues);
+    const avgPeak = average(peakValues);
+    const medPeak = median(peakValues);
+    const avgZcr = average(zcrValues);
+    const medZcr = median(zcrValues);
 
-  const beatTimes = beatTimesRef.current;
-  const beatIntervals: number[] = [];
+    const beatTimes = beatTimesRef.current;
+    const beatIntervals: number[] = [];
 
-  for (let i = 1; i < beatTimes.length; i += 1) {
-    beatIntervals.push(beatTimes[i] - beatTimes[i - 1]);
-  }
+    for (let i = 1; i < beatTimes.length; i += 1) {
+      beatIntervals.push(beatTimes[i] - beatTimes[i - 1]);
+    }
 
-  const medianBeatGap = median(beatIntervals);
-  const beatDensity =
-    durationSec > 0 ? clamp((beatTimes.length / durationSec) / 4, 0, 1) : 0;
+    const medianBeatGap = median(beatIntervals);
+    const beatDensity =
+      durationSec > 0 ? clamp((beatTimes.length / durationSec) / 4, 0, 1) : 0;
 
-  const rhythmStability =
-    medianBeatGap > 0
-      ? clamp(1 - Math.min(0.45, Math.abs(medianBeatGap - 520) / 900), 0, 1)
-      : 0.35;
+    const rhythmStability =
+      medianBeatGap > 0
+        ? clamp(1 - Math.min(0.45, Math.abs(medianBeatGap - 520) / 900), 0, 1)
+        : 0.35;
 
-  const density = clamp(
-    voicedRatio * 0.42 +
-      avgPeak * 0.22 +
-      medPeak * 0.18 +
-      medEnergy * 10 +
-      beatDensity * 0.12 +
-      rhythmStability * 0.06
-  );
+    const density = clamp(
+      voicedRatio * 0.42 +
+        avgPeak * 0.22 +
+        medPeak * 0.18 +
+        medEnergy * 10 +
+        beatDensity * 0.12 +
+        rhythmStability * 0.06
+    );
 
-  const energy = clamp(avgEnergy * 24 + medEnergy * 10 + avgPeak * 0.34);
+    const energy = clamp(avgEnergy * 24 + medEnergy * 10 + avgPeak * 0.34);
 
-  let stableZcr = clamp(avgZcr * 6.5 + medZcr * 2.5, 0, 1);
-  if (stableZcr < 0.08) stableZcr *= 0.82;
-  if (stableZcr > 0.78) stableZcr = 0.78;
+    let stableZcr = clamp(avgZcr * 6.5 + medZcr * 2.5, 0, 1);
+    if (stableZcr < 0.08) stableZcr *= 0.82;
+    if (stableZcr > 0.78) stableZcr = 0.78;
 
-  const normalizedLength = clamp(durationSec / 8, 0, 1);
+    const normalizedLength = clamp(durationSec / 8, 0, 1);
 
-  return {
-    density,
-    energy,
-    zcr: stableZcr,
-    length: normalizedLength,
-  };
-}
+    return {
+      density,
+      energy,
+      zcr: stableZcr,
+      length: normalizedLength,
+    };
   }
 
   async function startRecording() {
@@ -395,8 +393,8 @@ export function Recorder() {
                   {recording
                     ? "Grabando ahora"
                     : analyzing
-                      ? "Analizando audio"
-                      : "Grabación disponible"}
+                    ? "Analizando audio"
+                    : "Grabación disponible"}
                 </p>
 
                 <p className="mt-1 text-sm text-slate-400">{status}</p>
@@ -429,8 +427,8 @@ export function Recorder() {
                     recording
                       ? "bg-violet-400/80"
                       : analyzing
-                        ? "bg-cyan-400/70"
-                        : "bg-white/10"
+                      ? "bg-cyan-400/70"
+                      : "bg-white/10"
                   }`}
                   style={{ height: `${h}px` }}
                 />
@@ -497,6 +495,7 @@ export function Recorder() {
             Resultados ordenados
           </div>
         </div>
+
         <div className="mt-6 space-y-3">
           {results.length === 0 ? (
             <div className="rounded-[24px] border border-dashed border-white/10 bg-white/[0.04] px-5 py-8 text-center">
@@ -525,3 +524,4 @@ export function Recorder() {
       </div>
     </section>
   );
+}
