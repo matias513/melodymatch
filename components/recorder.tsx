@@ -497,7 +497,6 @@ export function Recorder() {
             Resultados ordenados
           </div>
         </div>
-
         <div className="mt-6 space-y-3">
           {results.length === 0 ? (
             <div className="rounded-[24px] border border-dashed border-white/10 bg-white/[0.04] px-5 py-8 text-center">
@@ -514,18 +513,15 @@ export function Recorder() {
               </p>
             </div>
           ) : (
-            <>
-              {results.map((item, index) => (
-                <ResultCard
-                  key={`${item.title}-${index}`}
-                  item={item}
-                  index={index}
-                />
-              ))}
-            </>
+            results.map((item, index) => (
+              <ResultCard
+                key={`${item.title}-${index}`}
+                item={item}
+                index={index}
+              />
+            ))
           )}
         </div>
       </div>
     </section>
   );
-}
