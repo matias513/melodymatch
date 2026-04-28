@@ -13,3 +13,11 @@ export type SearchMatch = {
   confidence: number;
   summary: string;
 };
+
+export type SongSeed = {
+  title: string;
+  artist: string;
+  country: string;
+  region: string;
+  fingerprint: [number, number, number, number];
+};
