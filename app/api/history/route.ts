@@ -20,7 +20,6 @@ export async function GET(request: Request) {
       select: {
         id: true,
         createdAt: true,
-        updatedAt: true,
         zcr: true,
         energy: true,
         density: true,
