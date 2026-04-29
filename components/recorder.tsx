@@ -256,26 +256,36 @@ export function Recorder() {
           const durationMs = Math.max(1, performance.now() - startedAtRef.current);
           const durationSec = durationMs / 1000;
 
-          if (durationSec < 2.8) {
-            setStatus("La grabación fue muy corta. Probá tararear entre 4 y 8 segundos.");
-            setAnalyzing(false);
-            cleanupAudioGraph();
-            return;
-          }
+                  if (durationSec < 2.8) {
+          setStatus("La grabación fue muy corta. Probá tararear entre 4 y 8 segundos.");
+          setAnalyzing(false);
+          cleanupAudioGraph();
+          return;
+        }
 
-          const payload = buildFeaturesFromFrames(durationSec);
+        const payload = buildFeaturesFromFrames(durationSec);
 
-          if (!payload) {
-            setStatus("No detecté suficiente voz clara. Probá cantar o tararear un poco más fuerte.");
-            setAnalyzing(false);
-            cleanupAudioGraph();
-            return;
-          }
+        if (!payload) {
+          setStatus("No detecté suficiente voz clara. Probá tararear más cerca del micrófono y con un ritmo más marcado.");
+          setAnalyzing(false);
+          cleanupAudioGraph();
+          return;
+        }
 
+        const weakSignal =
+          payload.energy < 0.16 ||
+          payload.density < 0.18 ||
+          payload.length < 0.32;
+
+        if (weakSignal) {
+          setFeatures(payload);
+          setStatus("Detecté una referencia débil. Igual voy a buscar coincidencias, pero conviene repetir la toma para mejorar el resultado.");
+        } else {
           setFeatures(payload);
           setStatus("Analizando audio y buscando coincidencias...");
-          setAnalyzing(true);
+        }
 
+        setAnalyzing(true);
           const response = await fetch("/api/search", {
             method: "POST",
             headers: {
